@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mysql_client/mysql_client.dart';
 import 'package:pillremind/pages/login.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -15,13 +16,58 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  Future<void> _readAll() async {
+    print("Connecting to mysql server...");
+
+    // create connection
+    final conn = await MySQLConnection.createConnection(
+      host: "127.0.0.1", //when you use simulator
+      port: 3306,
+      userName: "root",
+      password: "4065", // you need to replace with your password
+      databaseName: "pillremind", // you need to replace with your db name
+    );
+
+    await conn.connect();
+
+    print("Connected");
+
+    // make query
+    var result = await conn.execute("SELECT * FROM user ORDER BY id ASC");
+
+    // print query result
+    List<Map<String, String>> list = [];
+    for (final row in result.rows) {
+      final data = {
+        'id': row.colAt(0)!,
+        'name': row.colAt(1)!,
+        'password': row.colAt(2)!,
+        'username': row.colAt(3)!,
+        'telephone': row.colAt(4)!,
+        'gender': row.colAt(5)!
+      };
+      list.add(data);
+    }
+    print('Query Success');
+
+    setState(() {
+      list;
+      print(list);
+      nameController.text = list[0]['name']!;
+      genderController.text = list[0]["gender"]!;
+      genderController.text = list[0]["gender"]!;
+      usernameController.text = list[0]["username"]!;
+      passwordController.text = list[0]["password"]!;
+    });
+
+    // close all connections
+    await conn.close();
+  }
+
   @override
   void initState() {
-    nameController.text = 'สมหมาย';
-    genderController.text = 'ชาย';
-    ageController.text = '59';
-    usernameController.text = 'aazz1239';
-    passwordController.text = '123456789';
+    _readAll();
+
     super.initState();
   }
 
@@ -41,12 +87,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           TextField(
-            controller: ageController,
-            decoration: const InputDecoration(
-              label: Text('อายุ'),
-            ),
-          ),
-          TextField(
             controller: genderController,
             decoration: const InputDecoration(
               label: Text('เพศ'),
@@ -60,6 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           TextField(
             controller: passwordController,
+            obscureText: true,
             decoration: const InputDecoration(
               label: Text('รหัสผ่าน'),
             ),
