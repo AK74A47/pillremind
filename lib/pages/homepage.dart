@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mysql_client/mysql_client.dart';
@@ -111,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const AddPrec(),
+                builder: (context) => AddPrec(user: user),
               ));
         },
         tooltip: 'addPreception',
