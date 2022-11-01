@@ -21,11 +21,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // create connection
     final conn = await MySQLConnection.createConnection(
-      host: "127.0.0.1", //when you use simulator
+       host: "10.0.2.2",
       port: 3306,
-      userName: "root",
-      password: "4065", // you need to replace with your password
-      databaseName: "pillremind", // you need to replace with your db name
+      userName: "user",
+      password: "1234",
+      databaseName: "pillremind",
+      secure: false,
     );
 
     await conn.connect();

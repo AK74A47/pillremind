@@ -21,11 +21,12 @@ class _LoginPageState extends State<LoginPage> {
 
     // create connection
     final conn = await MySQLConnection.createConnection(
-      host: "127.0.0.1",
+      host: "10.0.2.2",
       port: 3306,
-      userName: "root",
-      password: "4065",
-      databaseName: "pillremind", // you need to replace with your db name
+      userName: "user",
+      password: "1234",
+      databaseName: "pillremind",
+      secure: false,
     );
 
     await conn.connect();
@@ -34,7 +35,6 @@ class _LoginPageState extends State<LoginPage> {
     var result = await conn
         .execute("select * from user where user.username = '$username'");
     List<Map<String, String>> list = [];
-
     for (final row in result.rows) {
       final data = {
         'id': row.colAt(0)!,
@@ -44,6 +44,8 @@ class _LoginPageState extends State<LoginPage> {
         'telephone': row.colAt(4)!,
         'gender': row.colAt(5)!,
       };
+      print(data);
+
       list.add(data);
     }
 
@@ -70,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextField(
               controller: passwordController,
+              obscureText: true,
               decoration: const InputDecoration(label: Text('รหัสผ่าน')),
               onChanged: (value) => password = passwordController.text,
             ),
