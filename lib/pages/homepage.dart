@@ -1,11 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:pillremind/pages/add_precep.dart';
 import 'package:pillremind/pages/profile.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({super.key, this.user});
+
+  final user;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -15,7 +16,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // var db = DB();
 
   List<Map<String, String>> displayList = [];
-  var user = '0736d42f-8dec-4586-a306-1068e5f82a0e';
   Future<void> _readPill() async {
     print("Connecting to mysql server...");
 
@@ -33,8 +33,8 @@ class _MyHomePageState extends State<MyHomePage> {
     print("Connected");
 
     // make query
-    var result =
-        await conn.execute("SELECT * FROM pill where pill.userId = '$user' ;");
+    var result = await conn
+        .execute("SELECT * FROM pill where pill.userId = '${widget.user}' ;");
 
     // print query result
     List<Map<String, String>> list = [];
@@ -51,7 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
     print('Query Success');
 
     setState(() {
-      list;
       displayList = list;
     });
 
@@ -110,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddPrec(user: user),
+                builder: (context) => AddPrec(user: widget.user),
               ));
         },
         tooltip: 'addPreception',
