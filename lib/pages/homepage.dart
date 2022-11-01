@@ -62,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    print('Home Page');
     _readPill();
     super.initState();
   }
@@ -69,18 +70,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('ยาที่ต้องกิน'), actions: [
-        IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfilePage(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.account_box))
-      ]),
+      appBar: AppBar(
+        title: const Text('ยาที่ต้องกิน'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfilePage(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.account_box))
+        ],
+        automaticallyImplyLeading: false,
+      ),
       body: Container(
         margin: const EdgeInsets.all(8),
         child: ListView.builder(
@@ -106,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
+          final value = Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => AddPrec(user: widget.user),
