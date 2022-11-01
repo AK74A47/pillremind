@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mysql_client/mysql_client.dart';
 
+import 'homepage.dart';
+
 class AddPrec extends StatefulWidget {
   const AddPrec({super.key, this.user});
 
@@ -92,8 +94,14 @@ class _AddPrecState extends State<AddPrec> {
               child: ElevatedButton(
                 onPressed: () async {
                   await _insert();
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/home', (Route<dynamic> route) => false);
+                  // Navigator.pop(context, true);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage(user: widget.user),
+                    ),
+                  );
                 },
                 child: const Text('เพิ่มรายการยา'),
               ),

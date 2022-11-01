@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:pillremind/pages/homepage.dart';
@@ -36,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     var result = await conn
         .execute("select * from user where user.username = '$username'");
     List<Map<String, String>> list = [];
-    
+
     for (final row in result.rows) {
       final data = {
         'id': row.colAt(0)!,
