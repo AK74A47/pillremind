@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mysql_client/mysql_client.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -10,9 +11,43 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController genderController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
+  TextEditingController telephoneController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  Future<void> _addProfile() async {
+    print("Connecting to mysql server...");
+
+    // create connection
+    final conn = await MySQLConnection.createConnection(
+      host: "127.0.0.1", //when you use simulator
+      port: 3306,
+      userName: "root",
+      password: "4065", // you need to replace with your password
+      databaseName: "pillremind", // you need to replace with your db name
+    );
+
+    await conn.connect();
+
+    print("Connected");
+
+    // insert some rows
+    var res = await conn.execute(
+      "INSERT INTO `user` ( `name`, `password`, `username`, `telephone`, `gender`) VALUES ( :name, :password, :username, :telephone, :gender);",
+      {
+        "name": nameController.text,
+        "gender": genderController.text,
+        "username": usernameController.text,
+        "telephone": telephoneController.text,
+        "password": passwordController.text,
+      },
+    );
+
+    print(res.affectedRows);
+
+    // close all connections
+    await conn.close();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +64,9 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             TextField(
-              controller: ageController,
+              controller: telephoneController,
               decoration: const InputDecoration(
-                label: Text('อายุ'),
+                label: Text('เบอร์โทร'),
               ),
             ),
             TextField(
@@ -62,9 +97,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   SizedBox(
                     height: 50,
                     child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          await _addProfile();
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/login', (Route<dynamic> route) => false);
+                              '/login', (Route<dynamic> route) => true);
                         },
                         child: const Text('สมัครสมาชิก')),
                   )
